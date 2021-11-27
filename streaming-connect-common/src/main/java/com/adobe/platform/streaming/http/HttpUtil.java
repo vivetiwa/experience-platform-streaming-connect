@@ -12,6 +12,8 @@
 
 package com.adobe.platform.streaming.http;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,17 +23,25 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author Adobe Inc.
  */
-class HttpUtil {
+public class HttpUtil {
 
-  static boolean is2xx(int responseCode) {
+  public static boolean is2xx(int responseCode) {
     return (responseCode >= 200 && responseCode < 300);
   }
 
-  static boolean is5xx(int responseCode) {
+  public static boolean is5xx(int responseCode) {
     return (responseCode >= 500 && responseCode < 600);
   }
 
-  static String streamToString(InputStream in) throws HttpException {
+  public static boolean is500(int responseCode) {
+    return responseCode == 500;
+  }
+
+  public static boolean isUnauthorized(int responseCode) {
+    return responseCode == 401 || responseCode == 403;
+  }
+
+  public static String streamToString(InputStream in) throws HttpException {
     StringBuilder sb = new StringBuilder(128);
     try (BufferedReader r = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
       String str;

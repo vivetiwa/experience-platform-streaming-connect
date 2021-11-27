@@ -35,29 +35,44 @@ public class IMSTokenProvider extends AbstractAuthProvider {
   private final String clientId;
   private final String clientCode;
   private final String clientSecret;
+  private HttpProducer httpProducer;
 
-  IMSTokenProvider(String clientId, String clientCode, String clientSecret) {
+  IMSTokenProvider(String clientId, String clientCode, String clientSecret,
+    AuthProxyConfiguration authProxyConfiguration) {
     this.clientId = clientId;
     this.clientCode = clientCode;
     this.clientSecret = clientSecret;
+    this.httpProducer = HttpProducer.newBuilder(endpoint)
+      .withProxyHost(authProxyConfiguration.getProxyHost())
+      .withProxyPort(authProxyConfiguration.getProxyPort())
+      .withProxyUser(authProxyConfiguration.getProxyUsername())
+      .withProxyPassword(authProxyConfiguration.getProxyPassword())
+      .build();
   }
 
-  IMSTokenProvider(String endpoint, String clientId, String clientCode, String clientSecret) {
-    this(clientId, clientCode, clientSecret);
+  IMSTokenProvider(String endpoint, String clientId, String clientCode, String clientSecret,
+    AuthProxyConfiguration authProxyConfiguration) {
+    this(clientId, clientCode, clientSecret, authProxyConfiguration);
     this.endpoint = endpoint;
+    this.httpProducer = HttpProducer.newBuilder(endpoint)
+        .withProxyHost(authProxyConfiguration.getProxyHost())
+        .withProxyPort(authProxyConfiguration.getProxyPort())
+        .withProxyUser(authProxyConfiguration.getProxyUsername())
+        .withProxyPassword(authProxyConfiguration.getProxyPassword())
+        .build();
   }
 
   @Override
   protected TokenResponse getTokenResponse() throws AuthException {
     LOG.debug("refreshing expired accessToken: {}", clientId);
-    StringBuffer params = new StringBuffer()
+    StringBuilder params = new StringBuilder()
       .append("grant_type=authorization_code")
       .append("&client_id=").append(clientId)
       .append("&client_secret=").append(clientSecret)
       .append("&code=").append(clientCode);
 
     try {
-      return HttpProducer.newBuilder(endpoint).build().post(
+      return httpProducer.post(
         IMS_ENDPOINT_PATH,
         params.toString().getBytes(),
         ContentType.APPLICATION_FORM_URLENCODED.getMimeType(),
