@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build for ${{ matrix.Java }}
+    name: Build for 8 and 11
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -20,9 +20,9 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: |
-          export JAVA_COMPILATION_VERSION=11
-          ./gradlew build
           export JAVA_COMPILATION_VERSION=8
+          ./gradlew build
+          export JAVA_COMPILATION_VERSION=11
           ./gradlew build
       - name: Bump Release Version
         id: tag_version
@@ -40,4 +40,6 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
           draft: true
           prerelease: false
-          files: ./streaming-connect-sink/build/libs/streaming-connect-sink-*.jar
+          files: |
+            ./streaming-connect-sink/build/libs/streaming-connect-sink-*.jar
+            ./build/distributions/adobe-streaming-connect-sink-*.zip
