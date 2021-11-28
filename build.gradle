@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+import java.util.regex.Pattern
 
 buildscript {
   repositories {
@@ -279,6 +280,23 @@ task copyDependencies(type: Copy) {
   """
   }
 
+}
+
+task updateVersion() {
+  if (project.hasProperty("versionBump")) {
+    def gradlePropertiesContent = new File(projectDir, "gradle.properties").text
+    if (!gradlePropertiesContent.isEmpty()) {
+      def pattern = Pattern.compile("versionMain=(?<version>[0-9]*.[0-9]*.[0-9]*)")
+      def matcher = pattern.matcher(gradlePropertiesContent)
+
+      def sb = new StringBuffer()
+      while (matcher.find()) {
+        matcher.appendReplacement(sb, matcher.group(0).replace(matcher.group("version"), versionBump))
+      }
+      matcher.appendTail(sb);
+      new File(projectDir, "gradle.properties").write sb.toString()
+    }
+  }
 }
 
 task kafkaConnectPublish(type: Zip) {
