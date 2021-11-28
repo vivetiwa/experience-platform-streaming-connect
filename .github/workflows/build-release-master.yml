@@ -26,7 +26,7 @@ jobs:
       - name: Build with Gradle
         run: |
           export JAVA_COMPILATION_VERSION=8
-          ./gradlew updateVersion -PversionBump=${{ steps.tag_version.outputs.new_version }}
+          export PROJECT_VERSION=${{ steps.tag_version.outputs.new_version }}
           ./gradlew build
           export JAVA_COMPILATION_VERSION=11
           ./gradlew build kafkaConnectPublish
