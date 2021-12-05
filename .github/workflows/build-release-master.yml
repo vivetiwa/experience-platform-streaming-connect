@@ -70,4 +70,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/vivetiwa/experience-platform-streaming-connect:latest
+          tags: ghcr.io/vivetiwa/experience-platform-streaming-connect:latest,ghcr.io/vivetiwa/experience-platform-streaming-connect:${{ steps.tag_version.outputs.new_version }}
