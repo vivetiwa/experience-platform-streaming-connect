@@ -71,4 +71,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/adobe/experience-platform-streaming-connect:latest,ghcr.io/adobe/experience-platform-streaming-connect:${{ steps.tag_version.outputs.new_version }}
+          tags: ghcr.io/vivetiwa/experience-platform-streaming-connect:latest,ghcr.io/vivetiwa/experience-platform-streaming-connect:${{ steps.tag_version.outputs.new_version }}
