@@ -241,9 +241,9 @@ task copyDependencies(type: Copy) {
   "description": "$connectProperties.description",
   "docker_image": {
     "tag": "$connectProperties.version",
-    "name": "$connectProperties.componentName",
-    "namespace": "",
-    "registry": ""
+    "name": "experience-platform-streaming-connect",
+    "namespace": "adobe",
+    "registry": "ghcr.io"
   },
   "documentation_url": "$connectProperties.documentationUrl",
   "features": {
